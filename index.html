@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      .selected {
+        box-shadow: 0 0 10px 3px #ff4500; /* Adds a shadow with an orange glow */
+      }
+      .dim {
+        filter: grayscale(100%); /* Makes non-selected images grayscale */
+      }
+      .thumbnail img {
+        transition: transform 0.2s ease, filter 0.2s ease; /* Smooth transition for effects */
+      }
+      .thumbnail img:hover {
+        transform: scale(1.1); /* Slightly enlarges the image on hover */
+      }
+      button {
+        transition: background-color 0.2s ease; /* Smooth background transition for buttons */
+      }
+    </style>
+</head>
+<body ng-app="imageGalleryApp" ng-controller="GalleryController as galleryCtrl" class="bg-gray-100 p-5">
+
+  <div class="flex flex-wrap justify-center">
+    <div class="thumbnail" ng-repeat="id in galleryCtrl.imageIds" ng-click="galleryCtrl.selectImage(id)">
+        <img class="cursor-pointer max-w-none w-24 h-24 m-2 object-cover rounded-lg" ng-src="https://picsum.photos/id/{{id}}/100/100" alt="Thumbnail" ng-class="{'selected': id === galleryCtrl.selectedImageId, 'dim': id !== galleryCtrl.selectedImageId}">
+    </div>
+  </div>
+
+  <div class="my-8 flex justify-center items-center">
+    <!-- Previous Arrow -->
+    <button ng-click="galleryCtrl.selectPreviousImage()" class="px-6 py-3 mx-3 bg-gray-300 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+        &#10094; Prev
+    </button>
+    
+    <img class="max-w-full h-auto rounded-lg shadow-lg" ng-src="https://picsum.photos/id/{{galleryCtrl.selectedImageId}}/500/500" alt="Large Image">
+    
+    <!-- Next Arrow -->
+    <button ng-click="galleryCtrl.selectNextImage()" class="px-6 py-3 mx-3 bg-gray-300 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+        Next &#10095;
+    </button>
+  </div>
+
+  <script>
+    angular.module('imageGalleryApp', [])
+      .controller('GalleryController', function() {
+        this.imageIds = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+        this.selectedImageId = this.imageIds[0];
+
+        this.selectImage = function(id) {
+          this.selectedImageId = id;
+        };
+
+        this.selectNextImage = function() {
+          let currentIndex = this.imageIds.indexOf(this.selectedImageId);
+          if (currentIndex < this.imageIds.length - 1) {
+            this.selectedImageId = this.imageIds[currentIndex + 1];
+          }
+        };
+
+        this.selectPreviousImage = function() {
+          let currentIndex = this.imageIds.indexOf(this.selectedImageId);
+          if (currentIndex > 0) {
+            this.selectedImageId = this.imageIds[currentIndex - 1];
+          }
+        };
+      });
+  </script>
+</body>
+</html>
